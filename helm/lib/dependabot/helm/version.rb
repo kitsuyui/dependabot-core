@@ -94,6 +94,23 @@ module Dependabot
         [@release_part, @update_part]
       end
     end
+
+    # A Docker image tag. It compares like a Helm::Version, but is written back exactly as the
+    # registry publishes it, so "v1.5.0" and "1.2.3-alpine" keep their prefix and suffix.
+    class ImageTag < Version
+      extend T::Sig
+
+      sig { override.params(version: VersionParameter).void }
+      def initialize(version)
+        @tag = T.let(version.to_s, String)
+        super
+      end
+
+      sig { override.returns(T.nilable(String)) }
+      def to_s
+        @tag
+      end
+    end
   end
 end
 
